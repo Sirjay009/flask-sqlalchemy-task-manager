@@ -26,4 +26,5 @@ def add_category():
 
 @app.route("/edit_category/<int:category_id>", methods=["GET", "POST"])
 def edit_category(category_id):
-    return render_template("edit_category.html")
+    category = Category.query.get_or_404(category_id)
+    return render_template("edit_category.html", category=category)
