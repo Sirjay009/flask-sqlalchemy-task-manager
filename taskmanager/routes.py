@@ -65,10 +65,10 @@ def edit_task(task_id):
     task = Task.query.get_or_404(task_id)
     categories = list(Category.query.order_by(Category.category_name).all())
     if request.method == "POST":
-        task.task_name = request.form.get("task_name"),
-        task.task_description = request.form.get("task_description"),
-        task.is_urgent = bool(True if request.form.get("is_urgent") else False),
-        task.due_date = request.form.get("due_date"),
+        task.task_name = request.form.get("task_name")
+        task.task_description = request.form.get("task_description")
+        task.is_urgent = bool(True if request.form.get("is_urgent") else False)
+        task.due_date = request.form.get("due_date")
         task.category_id = request.form.get("category_id")
         db.session.commit()
         return redirect(url_for("home"))
