@@ -29,7 +29,17 @@ def create_app():
     # Import routes after app creation to avoid circular imports
     from taskmanager import routes
     app.register_blueprint(routes.bp)  # If using blueprints
+    register_shell_context(app)
     return app
+
+
+def register_shell_context(app):
+    from taskmanager.models import Category, Task
+
+    def shell_context():
+        return {'db': db, 'Category': Category, 'Task': Task}
+    app.shell_context_processor(shell_context)
+
 
 # Optional env.py import (must be after create_app to avoid circular imports)
 
