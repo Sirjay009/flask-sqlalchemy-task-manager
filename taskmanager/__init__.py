@@ -19,11 +19,8 @@ def create_app():
     else:
         # Production configuration
         uri = os.environ.get("DATABASE_URL")
-        if not uri:
-            raise RuntimeError(
-                "DATABASE_URL environment variable not set in production!")
         # Handle Heroku's postgres:// scheme
-        if uri.startswith("postgres://"):
+        if uri and uri.startswith("postgres://"):
             uri = uri.replace("postgres://", "postgresql://", 1)
             app.config["SQLALCHEMY_DATABASE_URI"] = uri
 
