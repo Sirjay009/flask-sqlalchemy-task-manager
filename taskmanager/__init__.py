@@ -17,9 +17,13 @@ def create_app():
             "DB_URL", "sqlite:///taskmanager.db")
     else:
         uri = os.environ.get("DATABASE_URL")
-        if uri and uri.startswith("postgres://"):
-            uri = uri.replace("postgres://", "postgresql://", 1)
-        app.config["SQLALCHEMY_DATABASE_URI"] = uri
+        if uri:
+            if uri.startswith("postgres://"):
+                uri = uri.replace("postgres://", "postgresql://", 1)
+            app.config["SQLALCHEMY_DATABASE_URI"] = uri
+        else:
+            raise ValueError(
+                "DATABASE_URL environment variable not set in production!")
 
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
