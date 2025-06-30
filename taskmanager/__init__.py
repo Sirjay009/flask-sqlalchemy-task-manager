@@ -14,17 +14,14 @@ def create_app():
     app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY")
 
     # Database configuration
-    uri = os.environ.get("DATABASE_URL")
-
-    if uri:
-        # Handle Heroku's postgres:// to postgresql:// conversion
+    if os.environ.get("DEVELOPMENT") == "True":
+        app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DB_URL")
+    else:
+        uri = os.environ.get("DATABASE_URL")
         if uri.startswith("postgres://"):
             uri = uri.replace("postgres://", "postgresql://", 1)
+
         app.config["SQLALCHEMY_DATABASE_URI"] = uri
-    else:
-        # Fall back to local development DB
-        app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get(
-            "DB_URL", "postgresql:///taskmanager")
 
     # SQLAlchemy settings
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
