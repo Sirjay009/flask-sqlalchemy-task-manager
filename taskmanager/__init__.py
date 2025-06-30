@@ -13,21 +13,18 @@ def create_app():
     # Secret Key Configuration
     app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY")
 
-    # Database configuration
-    uri = os.environ.get("DATABASE_URL")
-
-    if uri:
-        # Handle Heroku's postgres:// to postgresql:// conversion
+    # Database configuration - STRICT MODE
+    if 'DYNO' in os.environ:  # Check if running on Heroku
+        uri = os.environ.get("DATABASE_URL")
+        if not uri:
+            raise RuntimeError("DATABASE_URL must be configured on Heroku")
         if uri.startswith("postgres://"):
             uri = uri.replace("postgres://", "postgresql://", 1)
         app.config["SQLALCHEMY_DATABASE_URI"] = uri
     else:
-        # Production safety check
-        if os.environ.get("FLASK_ENV") == "production":
-            raise ValueError("DATABASE_URL must be set in production!")
-        # Fall back to local development DB
+        # Local development
         app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get(
-            "DB_URL", "postgresql:///taskmanager")
+            "DB_URL", "sqlite:///taskmanager.db")
 
     # SQLAlchemy settings
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
