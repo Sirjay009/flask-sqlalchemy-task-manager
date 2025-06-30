@@ -1,6 +1,8 @@
 import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+if os.path.exists("env.py"):
+    import env  # noqa
 
 db = SQLAlchemy()  # Initialize db without app first
 
@@ -46,8 +48,3 @@ def register_shell_context(app):
         return {'db': db, 'Category': Category, 'Task': Task}
 
     app.shell_context_processor(shell_context)
-
-
-# Optional env.py import (must be after create_app to avoid circular imports)
-if os.path.exists("env.py"):
-    import env  # noqa
