@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 if os.path.exists("env.py"):
     import env  # noqa
 
-db = SQLAlchemy()  # Initialize db without app first
+db = SQLAlchemy()
 
 
 def create_app():
@@ -14,18 +14,19 @@ def create_app():
     app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY")
 
     # Database configuration
-    if os.environ.get("DEVELOPMENT") == "True":
-        # Development configuration
-        app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get(
-            "DB_URL", "sqlite:///taskmanager.db")
-    else:
-        # Production configuration
-        uri = os.environ.get("DATABASE_URL")
-        # Handle Heroku's postgres:// scheme
-        if uri and uri.startswith("postgres://"):
+    uri = os.environ.get("DATABASE_URL")
+
+    if uri:
+        # Handle Heroku's postgres:// to postgresql:// conversion
+        if uri.startswith("postgres://"):
             uri = uri.replace("postgres://", "postgresql://", 1)
             app.config["SQLALCHEMY_DATABASE_URI"] = uri
+        else:
+            # Fall back to local development DB
+            app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get(
+                "DB_URL", "sqlite:///taskmanager.db")
 
+    # SQLAlchemy settings
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
     # Initialize extensions with app
