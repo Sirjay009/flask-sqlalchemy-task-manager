@@ -24,7 +24,7 @@ def create_app():
         else:
             # Fall back to local development DB
             app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get(
-                "DB_URL", "sqlite:///taskmanager.db")
+                "DB_URL", "postgresql:///taskmanager")
 
     # SQLAlchemy settings
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
